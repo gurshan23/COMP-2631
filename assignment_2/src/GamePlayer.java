@@ -30,7 +30,7 @@ public class GamePlayer {
      * if user input is applicable.
      */
 
-    private static final String File = "outcomes2.csv";
+    private static final String File = "D:\\Programming\\Programming_Projects\\Git-Repos\\COMP-2631\\assignment_2\\API_FILES\\outcomes2.csv";
     private static String[][] outcomesArray;
     private static String[] choicesArray;
 
@@ -76,54 +76,59 @@ public class GamePlayer {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String header = reader.readLine();
             choicesArray = header.split(",");
-            // Need to subtract one from array length to account for first empty block.
-            int numChoices = choicesArray.length - 1;
+            
+            int numChoices = choicesArray.length - 1; // Adjust for the empty first column
             outcomesArray = new String[numChoices][numChoices];
 
             // Read each row and populate the outcomes matrix
             String line;
+            int rowCount = 0;
             while ((line = reader.readLine()) != null) {
-                // -1 keeps the empty spots found in the original file.
-                // Isolates the first choice (air) and fills the rest of the array
-                // with the filler verbs.
-                String[] values = line.split(",", -1);
-                String winner = values[0]; // Winner choice is the first element
-
+                String[] values = line.split(",", -1);  // Read the row and split by comma
+                String winner = values[0];  // First element is the winner
+                
                 // Find the index of the winner
                 int winnerIndex = getChoiceIndex(winner);
                 if (winnerIndex == -1) {
-                    continue; // Skip if the winner is invalid (shouldn't happen)
+                    System.out.println("Skipping invalid winner: " + winner);
+                    continue;  // Skip invalid entries
                 }
 
+                rowCount++;  // Increment the row count for debugging
+
                 // Populate the outcomes matrix for this winner
-                for (int i = 1; i < values.length; i++) { // Skip first column (winner's name)
+                for (int i = 1; i < values.length; i++) {
                     if (!values[i].isEmpty()) {
-                        outcomesArray[winnerIndex][i - 1] = values[i]; // Store verb in matrix
+                        if (winnerIndex < outcomesArray.length && (i - 1) < outcomesArray[winnerIndex].length) {
+                            outcomesArray[winnerIndex][i - 1] = values[i];  // Store the action verb
+                        } else {
+                            System.out.println("Warning: Index out of bounds at row " + rowCount + ", column " + i);
+                        }
                     }
                 }
             }
 
-            System.out.println("Reading all objects from 'allOutcomes.csv'... done.");
-            System.out.println("Reading all outcomes from 'allOutcomes.csv'... done.");
-        }
-        catch (IOException readFile) {
-            System.err.println("Error reading CSV file: " + readFile.getMessage());
+            System.out.println("Reading all objects from '" + fileName + "'... done.");
+        } catch (IOException e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
             System.exit(-1);
         }
     }
+
 
     /**
      * This method determines the index of the choices array.
      */
     public static int getChoiceIndex(String choice) {
         // Search for the choice in the choicesArray and return its index.
-        for (int i = 1; i < choicesArray.length; i++) { // Start from index 1 (skip empty first column)
-            if (choicesArray[i].equalsIgnoreCase(choice)) {
-                return i - 1; // Return index adjusted to fit outcomesArray.
+        for (int i = 0; i < choicesArray.length; i++) {  // Start from index 0
+            if (choicesArray[i].trim().equalsIgnoreCase(choice.trim())) {  // Case-insensitive match
+                return i - 1;  // Return index adjusted to fit outcomesArray.
             }
         }
-        return -1; // Choice not found
+        return -1;  // Choice not found
     }
+
 
     /**
      * This method displays the outcomes from the choices selected by player 1 and player 2.
@@ -154,3 +159,4 @@ public class GamePlayer {
         return choice.substring(0, 1).toUpperCase() + choice.substring(1).toLowerCase();
     }
 }
+
