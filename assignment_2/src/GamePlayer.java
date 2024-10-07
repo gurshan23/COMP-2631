@@ -11,14 +11,29 @@ import java.util.Scanner;
  * @author Gurshan Chera
  */
 public class GamePlayer {
-    private static final String File = "allOutcomes.csv";
-    private static String[][] outcomesArray;
-    private static String[] choicesArray;
+
+    //private static final String File = "allOutcomes.csv";
+
+    /**
+     * This method just reiterates where the choices and outcomes files were located.
+     */
+    /*public static void fileLocations(String choicesFile, String outcomesFile) {
+        //File = outcomesFile;
+        System.out.println("Choices CSV Path: " + choicesFile);
+        System.out.println("Outcomes CSV Path: " + outcomesFile);
+        System.out.println();
+        // Further logic to handle the files
+    }*/
 
     /**
      * This method reads the CSV file, asks for user input, and calls other methods within this class to determine
      * if user input is applicable.
      */
+
+    private static final String File = "outcomes2.csv";
+    private static String[][] outcomesArray;
+    private static String[] choicesArray;
+
     public static void reading() {
         // Step 1: Load the CSV file and populate the outcomes matrix
         csvOutcomes(File);
@@ -129,6 +144,9 @@ public class GamePlayer {
         }
     }
 
+    /**
+     * This function capitalizes the first letter of the choice and makes the other letters lower case.
+     */
     public static String capitalizeChoice(String choice) {
         if (choice == null || choice.isEmpty()) {
             return "";
